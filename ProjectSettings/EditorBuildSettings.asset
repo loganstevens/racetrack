@@ -4,5 +4,21 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/SampleScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/NotEnclosed.unity
+    guid: 4d35c902c41b343f9a2394aaa40c245f
+  - enabled: 1
+    path: Assets/Scenes/PlainCave.unity
+    guid: 1a5b337352d044e6a9666d2f72b6f4e6
+  - enabled: 1
+    path: Assets/Scenes/PaddedCave.unity
+    guid: 5617ae3d0064048119bacb72e9f53252
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 252cd983a4269475c982ee2344a0d76b, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 459152c6f2a9b41f29e362c50362033c, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 0655ed8196a3b4a80931abbc0acee973, type: 2}
+    xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 3d9cd3617bee243e18b3e355a5296f2b, type: 2}
