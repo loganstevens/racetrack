@@ -14,10 +14,11 @@ public class gridScriptTwo : MonoBehaviour {
     private GameObject[] cols;
     private List<Block> list;
     private List<KeyValuePair<int, int>> occupiedSpaces;
+    private int count = 0;
     private bool checker = true;
     private StreamReader readerOne, readerTwo;
-    private string pathOne, pathTwo, totalLineInput, result;
-    private string[] nums;
+    private string pathOne, pathTwo, totalLineInput, totalLineInputTwo, result;
+    private string[] nums, numsTwo;
     // Change colors for special blocks
     // Open CV
     // NumPy
@@ -54,14 +55,25 @@ public class gridScriptTwo : MonoBehaviour {
                 break;
             }
             nums = totalLineInput.Split(' ');
+
+            totalLineInputTwo = readerTwo.ReadLine(); //Line as string | Parse .txt Document
+            if (totalLineInputTwo == null) {
+                checker = false;
+                break;
+            }
+            numsTwo = totalLineInputTwo.Split(' ');
             
             //Read form matrix test file
             
-            if (nums.Length > 0) {
-                list.Add(new Block(int.Parse(nums[0]), (int.Parse(nums[1])), int.Parse(nums[2]), int.Parse(nums[3])));
-                //set variables to pasrsing results
+            if (nums.Length > 0) { //Parse nums, add blocks | Block(x y id angle) i = x, inverty(count) = y
+                for (int i = 0 ; i < numberofCols ; ++i) {
+                    if (int.Parse(nums[i]) != 0 && !list.Contains(Block.id)) {
+                        list.Add(new Block(i, inverty(count), int.Parse(nums[i]), numsTwo[i]));
+                    }
+                }
             }
             totalLineInput = ""; //Clear buffer
+            totalLineInputTwo = ""; //Clear buffer
         }
 
         //Debug.Log("min & Max: " + minLoc + " " + maxLoc);
@@ -70,10 +82,13 @@ public class gridScriptTwo : MonoBehaviour {
         clearBlocks(occupiedSpaces); //Resets blank values to "lawn"
         //tileCheck();
         readerOne.Close(); //Will open again at next loop
+        readerTwo.Close(); //Will open again at next loop
+        count = (count >= numberofRows) ? 0 : count+1;
     }
 
     void OnApplicationQuit() {
         readerOne.Close();
+        readerTwo.Close();
     }
 
     void placeBlocksOne(List<Block> _list) {
@@ -160,7 +175,7 @@ public class gridScriptTwo : MonoBehaviour {
     }
 
     double abs(double a) {
-        return -a;
+        return a < 0 ? -a : a;
     }
 
     void demoOne() {

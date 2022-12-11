@@ -354,7 +354,7 @@ public class gridScriptOne : MonoBehaviour {
     }
 
     double abs(double a) {
-        return -a;
+        return a < 0 ? -a : a;
     }
 
     void demoOne() {

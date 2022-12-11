@@ -49,8 +49,8 @@ public class Block {
     */
 
     public int id;
-    public double x;
-    public double y;
+    public int x;
+    public int y;
     public int angle; // 0, 90, 180, 270
 
     /*
@@ -62,7 +62,7 @@ public class Block {
     public int type;
     public string data = "";
 
-    public Block(double _x, double _y, int _id, int _angle) {
+    public Block(int _x, int _y, int _id, int _angle) {
         int _type, _attribute;
 
         id = _id;
@@ -124,7 +124,86 @@ public class Block {
         attribute = _attribute;
     }
 
+    public Block(int _x, int _y, int _id) {
+        int _type, _attribute;
+
+        id = _id;
+        if (id == 25) {
+            x = -1;
+            y = -1;
+        }
+        else {
+            x = _x;
+            y = _y;
+        }
+        data = ("ID: " + id) + (" X: " + x) + (" Y: " + y);
+
+        data += ("\n" + "TYPE: ");
+        switch (_id) { //Type
+            case int i when (i >= 0 && i <= 13):
+                _type = 2; //Straight Road
+                data += ("2: Straight Road" + "\n");
+                break;
+            case int i when (i >= 15 && i <= 19):
+                _type = 3; //Small Curve
+                data += ("3: Small Curve" + "\n");
+                break;
+            case int i when (i >= 20 && i <= 24):
+                _type = 4; //Big Curve
+                data += ("4: Big Curve" + "\n");
+                break;
+            case 14:
+                _type = 1; //Finish
+                data += ("1: Finish Line" + "\n");
+                break;
+            case 25:
+                _type = 5; //Baseboard - Do not render
+                data += ("5: BaseBoard" + "\n");
+                break;
+            default:
+                _type = 0;
+                data += ("0: NA" + "\n");
+                break;
+        }
+        type = _type;
+
+        data += ("ATTR: ");
+        switch (_id) { //Attribute
+            case int i when ((i >= 0 && i <= 2) || (i == 15 || i == 20)):
+                _attribute = 1; //acc
+                data += ("1: acc");
+                break;
+            case int i when ((i >= 3 && i <= 5) || (i == 16 || i == 21)):
+                _attribute = 2; //dec
+                data += ("2: dec");
+                break;
+            default:
+                _attribute = 0; //norm
+                data += ("0: norm");
+                break;
+        }
+        attribute = _attribute;
+    }
+
     // public override string ToString() {
     //     return data;        
     // }
+
+    public override bool Equals(object obj) {
+        //
+        // See the full list of guidelines at
+        //   http://go.microsoft.com/fwlink/?LinkID=85237
+        // and also the guidance for operator== at
+        //   http://go.microsoft.com/fwlink/?LinkId=85238
+        //
+        
+        if (obj == null || GetType() != obj.GetType()) {
+            return false;
+        }
+        
+        // TODO: write your implementation of Equals() here
+        if (Block == obj.GetType() && (Block) obj.id == this.id) {
+            return true;
+        }
+    }
 }
