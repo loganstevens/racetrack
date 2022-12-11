@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-//This script will also handle al processing accrding to the peices
-    //i.e., if (peice at 2x 5y == finishPeice) {terrainHere = rough} 
 
 public class gridScriptTwo : MonoBehaviour {
-    // Start is called before the first frame update
 
     public int numberofRows = 10, numberofCols = 10;
     private GameObject[] rows;
@@ -15,7 +12,7 @@ public class gridScriptTwo : MonoBehaviour {
     private List<Block> list;
     private List<KeyValuePair<int, int>> occupiedSpaces;
     private int count = 0;
-    private bool checker = true;
+    private bool canSet = false, checker = true;
     private StreamReader readerOne, readerTwo;
     private string pathOne, pathTwo, totalLineInput, totalLineInputTwo, result;
     private string[] nums, numsTwo;
@@ -24,8 +21,8 @@ public class gridScriptTwo : MonoBehaviour {
     // NumPy
 
     void Start() {
-        pathOne = "Assets/marker_orientations.txt"; // 2 Orientations
-        pathTwo = "Assets/marker_positions.txt"; // 3 Positions
+        pathTwo = "Assets/marker_orientations.txt"; // 2 Orientations
+        pathOne = "Assets/marker_positions.txt"; // 3 Positions
         totalLineInput = "";
         
         rows = new GameObject[numberofRows]; //Arrays must be initialized here
@@ -41,6 +38,7 @@ public class gridScriptTwo : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
+        count = 0;
         checker = true;
         occupiedSpaces.Clear();
         list.Clear();
@@ -67,23 +65,23 @@ public class gridScriptTwo : MonoBehaviour {
             
             if (nums.Length > 0) { //Parse nums, add blocks | Block(x y id angle) i = x, inverty(count) = y
                 for (int i = 0 ; i < numberofCols ; ++i) {
-                    if (int.Parse(nums[i]) != 0 && !list.Contains(Block.id)) {
-                        list.Add(new Block(i, inverty(count), int.Parse(nums[i]), numsTwo[i]));
+                    if (int.Parse(nums[i]) != 0 && !Block.containsID(list, int.Parse(nums[i]))) {
+                        list.Add(new Block(i, (count), int.Parse(nums[i]), int.Parse(numsTwo[i])));
+                        Debug.Log(new Block(i, (count), int.Parse(nums[i]), int.Parse(numsTwo[i])).ToString());
                     }
                 }
             }
             totalLineInput = ""; //Clear buffer
             totalLineInputTwo = ""; //Clear buffer
+            count = (count >= numberofRows) ? 0 : count+1;
         }
 
         //Debug.Log("min & Max: " + minLoc + " " + maxLoc);
 
         placeBlocksOne(list); //Adds to occupiedList
         clearBlocks(occupiedSpaces); //Resets blank values to "lawn"
-        //tileCheck();
         readerOne.Close(); //Will open again at next loop
-        readerTwo.Close(); //Will open again at next loop
-        count = (count >= numberofRows) ? 0 : count+1;
+        readerTwo.Close();
     }
 
     void OnApplicationQuit() {
@@ -92,7 +90,64 @@ public class gridScriptTwo : MonoBehaviour {
     }
 
     void placeBlocksOne(List<Block> _list) {
-        //Render and add to list of occipied spaces
+        canSet = false;
+
+        foreach(Block block in _list) {
+            if (block.type == 4) { //Move to nearest upper-left quadrant, regardless of orientation
+                canSet = (block.x + 1 < numberofCols && block.y + 1 < numberofRows) ? true : false;
+            }
+            for (int i = 0 ; i < 5 ; ++i) { //5 types of Block
+                if (block.type != 4) {
+                    if (i != block.type) {
+                        // Deactivate any other overlapping block type
+                        if (rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf) {
+                            rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(false);
+                            occupiedSpaces.Remove(new KeyValuePair<int, int>(block.x, block.y));
+                        }                            
+                    }
+                    else {
+                        // Activate blocktype
+                        if (!rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf) {rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(true);}
+                        // Block Rotation:
+                        rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.eulerAngles = new Vector3(0.0f, (float) block.angle, 0.0f);
+                        occupiedSpaces.Add(new KeyValuePair<int, int>(block.x, block.y));
+                    }
+                }
+                else if (block.type == 4 && canSet) { //must clear other adjacent values
+                    if (i != block.type) {
+                        // Deactivate any other overlapping block type for all areas
+                        if (rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf)     {
+                            rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(false);
+                            occupiedSpaces.Remove(new KeyValuePair<int, int>(block.x, block.y));
+                        }
+                        if (rows[block.y+1].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf)   {
+                            rows[block.y+1].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(false);
+                            occupiedSpaces.Remove(new KeyValuePair<int, int>(block.x, block.y+1));
+                        }
+                        if (rows[block.y].transform.GetChild(block.x+1).transform.GetChild(i).gameObject.activeSelf)   {
+                            rows[block.y].transform.GetChild(block.x+1).transform.GetChild(i).gameObject.SetActive(false);
+                            occupiedSpaces.Remove(new KeyValuePair<int, int>(block.x+1, block.y));
+                        }
+                        if (rows[block.y+1].transform.GetChild(block.x+1).transform.GetChild(i).gameObject.activeSelf) {
+                            rows[block.y+1].transform.GetChild(block.x+1).transform.GetChild(i).gameObject.SetActive(false);
+                            occupiedSpaces.Remove(new KeyValuePair<int, int>(block.x+1, block.y+1));
+                        }
+
+                    }
+                    else {
+                        // Activate blocktype
+                        if (!rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf) {rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(true);}
+                        // Block Rotation:
+                        rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.eulerAngles = new Vector3(0.0f, (float) block.angle, 0.0f);
+                        // Add occupied for all four grid spaces
+                        occupiedSpaces.Add(new KeyValuePair<int, int>(block.x, block.y));
+                        occupiedSpaces.Add(new KeyValuePair<int, int>(block.x+1, block.y));
+                        occupiedSpaces.Add(new KeyValuePair<int, int>(block.x, block.y+1));
+                        occupiedSpaces.Add(new KeyValuePair<int, int>(block.x+1, block.y+1));
+                    }
+                }
+            }
+        }
     }
 
     void clearBlocks() {
@@ -153,15 +208,11 @@ public class gridScriptTwo : MonoBehaviour {
     }
 
     double inverty(double y) {
-        return (maxLoc - y) + minLoc;
+        return (numberofRows - y);
     }
 
     int inverty(int y) {
-        return ((int) maxLoc - y) + (int) minLoc;
-    }
-
-    int invertGridy(int y) {
-        return (numberofRows - y);
+        return ((int) numberofRows - y);
     }
 
     void printArr(string[] input) {
@@ -174,17 +225,16 @@ public class gridScriptTwo : MonoBehaviour {
         return a < b ? a : b;
     }
 
+    int min(int a, int b) {
+        return a < b ? a : b;
+    }
+
     double abs(double a) {
         return a < 0 ? -a : a;
     }
 
-    void demoOne() {
-        //List<Block> list = new List<Block>();
-        maxLoc = 1200;
-        list.Add(new Block(817, 596, 6, 90));
-        list.Add(new Block(902, 595, 19, 0)); // 902 595 19 0
-        placeBlocksOne(list); //Adds to occupiedList
-        clearBlocks(occupiedSpaces); //Resets blank values to "lawn"
+    int abs(int a) {
+        return a < 0 ? -a : a;
     }
 
     /*

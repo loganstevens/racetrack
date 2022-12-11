@@ -62,7 +62,7 @@ public class Block {
     public int type;
     public string data = "";
 
-    public Block(int _x, int _y, int _id, int _angle) {
+    public Block(double _x, double _y, int _id, int _angle) {
         int _type, _attribute;
 
         id = _id;
@@ -71,8 +71,8 @@ public class Block {
             y = -1;
         }
         else {
-            x = _x;
-            y = _y;
+            x = (int) _x;
+            y = (int) _y;
         }
         angle = _angle;
         data = ("ID: " + id) + (" X: " + x) + (" Y: " + y) + (" ANG: " + angle);
@@ -107,6 +107,94 @@ public class Block {
         type = _type;
 
         data += ("ATTR: ");
+        switch (_id) { //Attribute
+            case int i when ((i >= 0 && i <= 2) || (i == 15 || i == 20)):
+                _attribute = 1; //acc
+                data += ("1: acc");
+                break;
+            case int i when ((i >= 3 && i <= 5) || (i == 16 || i == 21)):
+                _attribute = 2; //dec
+                data += ("2: dec");
+                break;
+            default:
+                _attribute = 0; //norm
+                data += ("0: norm");
+                break;
+        }
+        attribute = _attribute;
+    }
+
+    public Block(int _x, int _y, int _id, int _angle) {
+        int _type, _attribute;
+
+        id = _id;
+        if (id == 25) {
+            x = -1;
+            y = -1;
+        }
+        else {
+            x = _x;
+            y = _y;
+        }
+        data = ("ID: " + id) + (" X: " + x) + (" Y: " + y);
+
+        data += ("\n" + "TYPE: ");
+        switch (_id) { //Type
+            case int i when (i >= 0 && i <= 13):
+                _type = 2; //Straight Road
+                data += ("2: Straight Road" + "\n");
+                break;
+            case int i when (i >= 15 && i <= 19):
+                _type = 3; //Small Curve
+                data += ("3: Small Curve" + "\n");
+                break;
+            case int i when (i >= 20 && i <= 24):
+                _type = 4; //Big Curve
+                data += ("4: Big Curve" + "\n");
+                break;
+            case 14:
+                _type = 1; //Finish
+                data += ("1: Finish Line" + "\n");
+                break;
+            case 25:
+                _type = 5; //Baseboard - Do not render
+                data += ("5: BaseBoard" + "\n");
+                break;
+            default:
+                _type = 0;
+                data += ("0: NA" + "\n");
+                break;
+        }
+        type = _type;
+
+        //For orientations,
+        //0 for empty,
+        //1 for 0 deg,
+        //2 for 90 deg,
+        //3 for 180 deg,
+        //and 4 for 270 deg. (All clockwise)
+        //Default:
+        //Curves: N -> E
+        //Stright: N -> S (Vertical)
+        //Rotation: Clockwise
+        switch (_angle) { //Pure
+            case 2:
+                angle = 90;
+                break;
+            case 3:
+                angle = 180;
+                break;
+            case 4:
+                angle = 270;
+                break;
+            default:
+                angle = 0;
+                break;
+        }
+
+        data += (" ANG: " + angle);
+
+        data += (" ATTR: ");
         switch (_id) { //Attribute
             case int i when ((i >= 0 && i <= 2) || (i == 15 || i == 20)):
                 _attribute = 1; //acc
@@ -185,9 +273,18 @@ public class Block {
         attribute = _attribute;
     }
 
-    // public override string ToString() {
-    //     return data;        
-    // }
+    public override string ToString() {
+        return data;        
+    }
+
+    public static bool containsID(List<Block> c, int containsID) {
+        foreach (Block o in c) {
+            if (o != null && o.id == (containsID)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public override bool Equals(object obj) {
         //
@@ -197,13 +294,16 @@ public class Block {
         //   http://go.microsoft.com/fwlink/?LinkId=85238
         //
         
-        if (obj == null || GetType() != obj.GetType()) {
+        if (obj == null || this.GetType() != obj.GetType()) {
             return false;
         }
+
+        Block other = (Block) obj;
         
         // TODO: write your implementation of Equals() here
-        if (Block == obj.GetType() && (Block) obj.id == this.id) {
+        if (other.id == this.id) {
             return true;
         }
+        return false;
     }
 }
