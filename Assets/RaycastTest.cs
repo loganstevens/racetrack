@@ -45,12 +45,16 @@ public class RaycastTest : MonoBehaviour
                 print("My ray hit: " + result.collider.gameObject.name);
                 viewResultFull = result.collider.gameObject.name;
             }
-            return result.collider.gameObject.name.Length > 1 ? result.collider.gameObject.name : "NothingHasBeenHit";
+            if (result.collider != null) {
+                return result.collider.gameObject.name.Length > 1 ? result.collider.gameObject.name : "NothingHasBeenHit";
+            }
+            else {
+                return "NothingHasBeenHit";
+            }
         //}
     }
     
-    void Update()
-    {
+    void Update() {
         viewResultFull = interactRaycast();
         if (viewResultFull != "NothingHasBeenHit") {
             Debug.Log("RayCastTwo: " + viewResultFull + '\n');
