@@ -67,7 +67,7 @@ public class gridScriptTwo : MonoBehaviour {
                 for (int i = 0 ; i < numberofCols ; ++i) {
                     if (int.Parse(nums[i]) != 0 && !Block.containsID(list, int.Parse(nums[i]))) {
                         list.Add(new Block(i, (count), int.Parse(nums[i]), int.Parse(numsTwo[i])));
-                        Debug.Log(new Block(i, (count), int.Parse(nums[i]), int.Parse(numsTwo[i])).ToString());
+                        //Debug.Log(new Block(i, (count), int.Parse(nums[i]), int.Parse(numsTwo[i])).ToString());
                     }
                 }
             }

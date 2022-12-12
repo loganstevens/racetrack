@@ -232,6 +232,32 @@ public class Block {
         return data;        
     }
 
+    public string GetType() {
+        string _data = "";
+        switch (id) {
+            case int i when (i >= 0 && i <= 13):
+                _data += ("2: Straight Road");
+                break;
+            case int i when (i >= 15 && i <= 19):
+                _data += ("3: Small Curve");
+                break;
+            case int i when (i >= 20 && i <= 24):
+                _data += ("4: Big Curve");
+                break;
+            case 14:
+                _data += ("1: Finish Line");
+                break;
+            case 25:
+                _data += ("5: BaseBoard");
+                break;
+            default:
+                _data += ("0: NA");
+                break;
+        }
+        _data += (" | " + attribute);
+        return _data;
+    }
+
     public static bool containsID(List<Block> c, int containsID) {
         foreach (Block o in c) {
             if (o != null && o.id == (containsID)) {
@@ -250,24 +276,24 @@ public class Block {
         return null;
     }
 
-    public override bool Equals(object obj) {
-        //
-        // See the full list of guidelines at
-        //   http://go.microsoft.com/fwlink/?LinkID=85237
-        // and also the guidance for operator== at
-        //   http://go.microsoft.com/fwlink/?LinkId=85238
-        //
+    // public override bool Equals(object obj) {
+    //     //
+    //     // See the full list of guidelines at
+    //     //   http://go.microsoft.com/fwlink/?LinkID=85237
+    //     // and also the guidance for operator== at
+    //     //   http://go.microsoft.com/fwlink/?LinkId=85238
+    //     //
         
-        if (obj == null || this.GetType() != obj.GetType()) {
-            return false;
-        }
+    //     if (obj == null || this.GetType() != obj.GetType()) {
+    //         return false;
+    //     }
 
-        Block other = (Block) obj;
+    //     Block other = (Block) obj;
         
-        // TODO: write your implementation of Equals() here
-        if (other.id == this.id) {
-            return true;
-        }
-        return false;
-    }
+    //     // TODO: write your implementation of Equals() here
+    //     if (other.id == this.id) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }

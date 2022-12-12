@@ -13,7 +13,7 @@ public class CameraMovementSimulator : MonoBehaviour {
     [SerializeField]
     float rotationSpeed=1000.0f;
     [SerializeField]
-    public float translationSpeed=3.0f; //Dfault Moving Speed
+    public float translationSpeed=4.0f; //Dfault Moving Speed
     int framesToWaitForMouseLock=30;
     public GameObject grid;
     private gridScriptTwo gridScript;
@@ -72,12 +72,29 @@ public class CameraMovementSimulator : MonoBehaviour {
         2 = deceleration
         */
 
-        // switch (currentBlock.attribute) {
-        //     default:
-        //     break;
-        // }
+        if (currentBlock != null) {
+            switch (currentBlock.attribute) {
+                case 1: //faseter
+                translationSpeed = 6.0f;
+                break;
+                case 2: //slower
+                translationSpeed = 5.0f;
+                break;
+                default:
+                translationSpeed = 4.0f;
+                break;
+            }
+        }
+        else { //Player is over nothing or a lawn block: Slower speed here
+            translationSpeed = 2.0f;
+        }
 
-
+        if (currentBlock != null) {
+            Debug.Log(currentBlock.GetType());
+        }
+        else {
+            Debug.Log("--Empty Block-- | 2");
+        }
     }
     void printArr(string[] input) {
         foreach (string num in input) {
