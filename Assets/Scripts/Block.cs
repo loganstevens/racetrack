@@ -181,6 +181,13 @@ public class Block {
         }
         data = ("ID: " + id) + (" X: " + x) + (" Y: " + y);
 
+        /*
+        1: Finish
+        2: Straight
+        3: Small Curve
+        4: Big Curve
+        */
+
         data += ("\n" + "TYPE: ");
         switch (_id) { //Type
             case int i when (i >= 0 && i <= 13):

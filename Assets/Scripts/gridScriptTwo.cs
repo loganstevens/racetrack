@@ -16,6 +16,7 @@ public class gridScriptTwo : MonoBehaviour {
     private StreamReader readerOne, readerTwo;
     private string pathOne, pathTwo, totalLineInput, totalLineInputTwo, result;
     private string[] nums, numsTwo;
+    private float offset = 0.0f;
     // Change colors for special blocks
     // Open CV
     // NumPy
@@ -92,6 +93,17 @@ public class gridScriptTwo : MonoBehaviour {
     void placeBlocksOne(List<Block> _list) {
         canSet = false;
 
+        /*
+        1: Finish
+        2: Straight
+        3: Small Curve
+        4: Big Curve
+        */
+
+        //straight & finish = -0.1
+        //big Curve: -0.044
+        //Small Curve: -0.058
+
         foreach(Block block in _list) {
             if (block.type == 4) { //Move to nearest upper-left quadrant, regardless of orientation
                 canSet = (block.x + 1 < numberofCols && block.y + 1 < numberofRows) ? true : false;
@@ -109,7 +121,23 @@ public class gridScriptTwo : MonoBehaviour {
                         // Activate blocktype
                         if (!rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf) {rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(true);}
                         // Block Rotation:
+                        switch (block.type) {
+                            case 1:
+                            case 2:
+                                offset = -0.1f;
+                                break;
+                            case 3:
+                                offset = -0.058f;
+                                break;
+                            // case 4:
+                            //     offset = -0.044f;
+                            //     break;
+                            default:
+                                offset = 0.0f;
+                                break;
+                        }
                         rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.eulerAngles = new Vector3(0.0f, (float) block.angle, 0.0f);
+                        rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.position = new Vector3(rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.position.x, (offset), rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.position.z);
                         occupiedSpaces.Add(new KeyValuePair<int, int>(block.x, block.y));
                     }
                 }
@@ -138,7 +166,8 @@ public class gridScriptTwo : MonoBehaviour {
                         // Activate blocktype
                         if (!rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.activeSelf) {rows[block.y].transform.GetChild(block.x).transform.GetChild(i).gameObject.SetActive(true);}
                         // Block Rotation:
-                        rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.eulerAngles = new Vector3(0.0f, (float) block.angle, 0.0f);
+                        rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.eulerAngles = new Vector3(0.0f, (float) block.angle, 0.0f); //offset for type 4
+                        rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.position = new Vector3(rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.position.x, (-0.044f), rows[block.y].transform.GetChild(block.x).transform.GetChild(i).transform.position.z); //offset for type 4
                         // Add occupied for all four grid spaces
                         occupiedSpaces.Add(new KeyValuePair<int, int>(block.x, block.y));
                         occupiedSpaces.Add(new KeyValuePair<int, int>(block.x+1, block.y));
