@@ -9,7 +9,7 @@ public class gridScriptTwo : MonoBehaviour {
     public int numberofRows = 10, numberofCols = 10;
     private GameObject[] rows;
     private GameObject[] cols;
-    private List<Block> list;
+    public List<Block> list; //For player location: public
     private List<KeyValuePair<int, int>> occupiedSpaces;
     private int count = 0;
     private bool canSet = false, checker = true;

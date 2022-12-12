@@ -61,69 +61,6 @@ public class Block {
     public int attribute;
     public int type;
     public string data = "";
-
-    public Block(double _x, double _y, int _id, int _angle) {
-        int _type, _attribute;
-
-        id = _id;
-        if (id == 25) {
-            x = -1;
-            y = -1;
-        }
-        else {
-            x = (int) _x;
-            y = (int) _y;
-        }
-        angle = _angle;
-        data = ("ID: " + id) + (" X: " + x) + (" Y: " + y) + (" ANG: " + angle);
-
-        data += ("\n" + "TYPE: ");
-        switch (_id) { //Type
-            case int i when (i >= 0 && i <= 13):
-                _type = 2; //Straight Road
-                data += ("2: Straight Road" + "\n");
-                break;
-            case int i when (i >= 15 && i <= 19):
-                _type = 3; //Small Curve
-                data += ("3: Small Curve" + "\n");
-                break;
-            case int i when (i >= 20 && i <= 24):
-                _type = 4; //Big Curve
-                data += ("4: Big Curve" + "\n");
-                break;
-            case 14:
-                _type = 1; //Finish
-                data += ("1: Finish Line" + "\n");
-                break;
-            case 25:
-                _type = 5; //Baseboard - Do not render
-                data += ("5: BaseBoard" + "\n");
-                break;
-            default:
-                _type = 0;
-                data += ("0: NA" + "\n");
-                break;
-        }
-        type = _type;
-
-        data += ("ATTR: ");
-        switch (_id) { //Attribute
-            case int i when ((i >= 0 && i <= 2) || (i == 15 || i == 20)):
-                _attribute = 1; //acc
-                data += ("1: acc");
-                break;
-            case int i when ((i >= 3 && i <= 5) || (i == 16 || i == 21)):
-                _attribute = 2; //dec
-                data += ("2: dec");
-                break;
-            default:
-                _attribute = 0; //norm
-                data += ("0: norm");
-                break;
-        }
-        attribute = _attribute;
-    }
-
     public Block(int _x, int _y, int _id, int _angle) {
         int _type, _attribute;
 
@@ -177,19 +114,37 @@ public class Block {
         //Curves: N -> E
         //Stright: N -> S (Vertical)
         //Rotation: Clockwise
-        switch (_angle) { //Pure
-            case 2:
-                angle = 90;
-                break;
-            case 3:
-                angle = 180;
-                break;
-            case 4:
-                angle = 270;
-                break;
-            default:
-                angle = 0;
-                break;
+        if (type == 2 || type == 1) {
+            switch (_angle) {
+                case 2:
+                    angle = 180;
+                    break;
+                case 3:
+                    angle = 270;
+                    break;
+                case 4:
+                    angle = 0;
+                    break;
+                default:
+                    angle = 90;
+                    break;
+            }
+        }
+        else {
+            switch (_angle) { //Pure
+                case 2:
+                    angle = 90;
+                    break;
+                case 3:
+                    angle = 180;
+                    break;
+                case 4:
+                    angle = 270;
+                    break;
+                default:
+                    angle = 0;
+                    break;
+            }
         }
 
         data += (" ANG: " + angle);
@@ -284,6 +239,15 @@ public class Block {
             }
         }
         return false;
+    }
+
+    public static Block getBlockByCoords(List<Block> c, int _x, int _y) {
+        foreach (Block o in c) {
+            if (o != null && o.x == _x && o.y == _y) {
+                return o;
+            }
+        }
+        return null;
     }
 
     public override bool Equals(object obj) {
