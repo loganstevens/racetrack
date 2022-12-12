@@ -61,7 +61,7 @@ public class Block {
     public int attribute;
     public int type;
     public string data = "";
-    public Block(int _x, int _y, int _id, int _angle) {
+    public Block(int _x, int _y, int _id, int _angle) { //PRIMARY
         int _type, _attribute;
 
         id = _id;
@@ -277,6 +277,15 @@ public class Block {
     public static Block getBlockByCoords(List<Block> c, int _x, int _y) {
         foreach (Block o in c) {
             if (o != null && o.x == _x && o.y == _y) {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public static Block getBlockByID(List<Block> c, int _id) {
+        foreach (Block o in c) {
+            if (o != null && o.id == _id) {
                 return o;
             }
         }
