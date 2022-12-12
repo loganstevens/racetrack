@@ -24,7 +24,6 @@ public class gridScriptTwo : MonoBehaviour {
     void Start() {
         pathTwo = "Assets/marker_orientations.txt"; // 2 Orientations
         pathOne = "Assets/marker_positions.txt"; // 3 Positions
-        totalLineInput = "";
         
         rows = new GameObject[numberofRows]; //Arrays must be initialized here
         list = new List<Block>();
@@ -33,6 +32,9 @@ public class gridScriptTwo : MonoBehaviour {
         for (int i = 0 ; i < rows.Length ; ++i) {
             if (rows[i] == null) {rows[i] = this.gameObject.transform.GetChild(i).gameObject;}
         }
+
+        
+
         clearBlocks();
         // Run proc for finding maxLoc
     }
